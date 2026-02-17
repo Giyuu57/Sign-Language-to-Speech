@@ -5,7 +5,6 @@ import cv2
 from Inference.predict_gesture import predict
 from Inference.text_to_speech import speak
 
-# window setup
 window = tk.Tk()
 window.title("Sign Language Recognition")
 window.geometry("800x600")
@@ -13,11 +12,9 @@ window.geometry("800x600")
 camera_running = False
 cap = None
 
-# video label
 video_label = tk.Label(window)
 video_label.pack()
 
-# prediction label
 prediction_var = tk.StringVar()
 prediction_var.set("Prediction: ")
 
@@ -53,7 +50,6 @@ def update_frame():
         if ret:
             frame = cv2.flip(frame, 1)
 
-            # convert to HSV for skin detection
             hsv = cv2.cvtColor(frame, cv2.COLOR_BGR2HSV)
 
             lower_skin = (0, 30, 60)
@@ -61,7 +57,6 @@ def update_frame():
 
             mask = cv2.inRange(hsv, lower_skin, upper_skin)
 
-            # remove noise
             mask = cv2.GaussianBlur(mask, (5, 5), 0)
 
             contours, _ = cv2.findContours(
@@ -82,7 +77,6 @@ def update_frame():
                         gesture = predict(roi)
                         prediction_var.set(f"Prediction: {gesture}")
 
-            # convert for tkinter
             frame = cv2.cvtColor(frame, cv2.COLOR_BGR2RGB)
             img = Image.fromarray(frame)
             imgtk = ImageTk.PhotoImage(image=img)
@@ -94,7 +88,6 @@ def update_frame():
 
 
 
-# buttons
 btn_frame = tk.Frame(window)
 btn_frame.pack(pady=10)
 
