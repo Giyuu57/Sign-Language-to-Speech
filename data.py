@@ -1,7 +1,7 @@
 import cv2
 import os
 
-directory = "dataset/test"
+directory = "dataset/train"
 
 os.makedirs(directory, exist_ok=True)
 os.makedirs(os.path.join(directory, "blank"), exist_ok=True)
