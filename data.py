@@ -34,7 +34,7 @@ while True:
     cv2.rectangle(frame, (170, 80), (470, 340), (255, 255, 255), 2)
 
     y_pos = 20
-    for letter in ['A','B','C','D','E']:
+    for letter in ['F','G','H','I','J']:
         cv2.putText(frame, f"{letter}: {count[letter]}", (10, y_pos),
                     cv2.FONT_HERSHEY_SIMPLEX, 0.5, (0,255,0), 1)
         y_pos += 20
