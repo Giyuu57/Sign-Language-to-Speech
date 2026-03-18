@@ -2,260 +2,168 @@
 using namespace std;
 
 int main() {
-    int T;
-    cin >> T;
-    while(T--) {
-        int N;
+    int ;
+    cin >> t;
+    for(int test = 0; test < t; test++) {
+        int n;
         string A, B;
-        cin >> N >> A >> B;
-        bool A_mono = true, B_mono = true;
-
-        if(N > 0) {
-            char fa = A[0], fb = B[0];
-            for(char c : A) if(c != fa) A_mono = false;
-            for(char c : B) if(c != fb) B_mono = false;
-        }
-
+        cin >> n >> A >> B;
         if(A == B) {
             cout << 0 << endl;
             cout << 0 << endl;
             continue;
         }
-
-        int min_cost = (A_mono || B_mono) ? 1 : 0;
+        bool a_mono = true;
+        bool b_mono = true;
+        char fa = A[0];
+        char fb = B[0];
+        for(char c : A) if(c != fa) a_mono = false;
+        for(char c : B) if(c != fb) b_mono = false;
+        int min_cost = (a_mono || b_mono) ? 1 : 0;
         cout << min_cost << endl;
-
         vector<pair<int, int>> ops;
         string curr = A;
-
+        auto apply_flip = [&](int l, int r) {
+            for(int i = l; i <= r; i++) {
+                curr[i] = '0' + '1' - curr[i];
+            }
+        };
         if(min_cost == 0) {
-            vector<int> is_mis(N);
-            int cur_h = 0;
-            for(int j = 0; j < N; j++) {
-                is_mis[j] = (curr[j] != B[j]);
-                cur_h += is_mis[j];
-            }
 
-            vector<int> pref(N + 1, 0);
-            for(int j = 0; j < N; j++) pref[j + 1] = pref[j] + is_mis[j];
-            while(cur_h > 0) {
-                int L = -1;
-
-                for(int j = 0; j < N; j++) if(is_mis[j]) {
-                    L = j; break;
-                }
-
-                if(L == -1) break;
-                int best_new = INT_MAX;
-                int best_r = -1;
-
-                for(int r = 0; r < N; r++) {
-                    if(r == L) continue;
-                    if(curr[L] == curr[r]) continue;
-                    int ll = min(L, r);
-                    int rr = max(L, r);
-                    int mrange = pref[rr + 1] - pref[ll];
-                    int len_ = rr - ll + 1;
-                    int newh = cur_h - 2 * mrange + len_;
-                    if(newh < best_new) {
-                        best_new = newh;
-                        best_r = r;
-                    }
-                }
-
-                if(best_r != -1 && best_new < cur_h) {
-                    int ll = min(L, best_r);
-                    int rr = max(L, best_r);
-                    ops.emplace_back(ll + 1, rr + 1);
-                    int mrange = pref[rr + 1] - pref[ll];
-                    for(int j = ll; j <= rr; j++) {
-                        curr[j] = '0' + '1' - curr[j];
-                        is_mis[j] = 1 - is_mis[j];
-                    }
-
-                    cur_h = best_new;
-                    pref[0] = 0;
-
-                    for(int j = 0; j < N; j++) pref[j + 1] = pref[j] + is_mis[j];
-
-                } else {
-                    int j = -1;
-                    for(int k = L; k < N; k++) if(curr[k] != curr[L]) { j = k; break; }
-                    if(j == -1) for(int k = L - 1; k >= 0; k--) if(curr[k] != curr[L]) { j = k; break; }
-                    if(j != -1) {
-                        int ll = min(L, j);
-                        int rr = max(L, j);
-                        ops.emplace_back(ll + 1, rr + 1);
-                        int mrange = pref[rr + 1] - pref[ll];
-                        for(int k = ll; k <= rr; k++) {
-                            curr[k] = '0' + '1' - curr[k];
-                            is_mis[k] = 1 - is_mis[k];
-                        }
-
-                        cur_h = cur_h - 2 * mrange + (rr - ll + 1);
-                        pref[0] = 0;
-                        for(int k = 0; k < N; k++) pref[k + 1] = pref[k] + is_mis[k];
-
-                    } else {
+            while(true) {
+                int i = -1;
+                for(int k = 0; k < n; k++) {
+                    if(curr[k] != B[k]) {
+                        i = k;
                         break;
                     }
                 }
-            }
-        } else {
-            if(A_mono && B_mono) {
-                ops.emplace_back(1, N);
-                for(int i = 0; i < N; i++) curr[i] = '0' + '1' - curr[i];
-
-            } else if(B_mono) {
-                vector<int> is_mis(N);
-                int cur_h = 0;
-                for(int j = 0; j < N; j++) {
-                    is_mis[j] = (curr[j] != B[j]);
-                    cur_h += is_mis[j];
-                }
-
-                vector<int> pref(N + 1, 0);
-                for(int j = 0; j < N; j++) pref[j + 1] = pref[j] + is_mis[j];
-
-                while(cur_h > 0) {
-                    if(cur_h == 1) {
-                        int the_i = -1;
-                        for(int k = 0; k < N; k++) if(is_mis[k]) { the_i = k; break; }
-                        ops.emplace_back(the_i + 1, the_i + 1);
-                        curr[the_i] = '0' + '1' - curr[the_i];
+                if(i == -1) break;
+                int j = -1;
+                for(int k = i; k < n; k++) {
+                    if(curr[k] != curr[i]) {
+                        j = k;
                         break;
                     }
-
-                    int L = -1;
-                    for(int j = 0; j < N; j++) if(is_mis[j]) { L = j; break; }
-                    int best_new = INT_MAX;
-                    int best_r = -1;
-
-                    for(int r = 0; r < N; r++) {
-                        if(r == L) continue;
-                        if(curr[L] == curr[r]) continue;
-                        int ll = min(L, r);
-                        int rr = max(L, r);
-                        int mrange = pref[rr + 1] - pref[ll];
-                        int len_ = rr - ll + 1;
-                        int newh = cur_h - 2 * mrange + len_;
-                        if(newh < best_new) {
-                            best_new = newh;
-                            best_r = r;
-                        }
-                    }
-
-                    if(best_r != -1 && best_new < cur_h) {
-                        int ll = min(L, best_r);
-                        int rr = max(L, best_r);
-                        ops.emplace_back(ll + 1, rr + 1);
-                        int mrange = pref[rr + 1] - pref[ll];
-                        for(int k = ll; k <= rr; k++) {
-                            curr[k] = '0' + '1' - curr[k];
-                            is_mis[k] = 1 - is_mis[k];
-                        }
-                        cur_h = best_new;
-                        pref[0] = 0;
-                        for(int k = 0; k < N; k++) pref[k + 1] = pref[k] + is_mis[k];
-                    } else {
-                        int j = -1;
-                        for(int k = L; k < N; k++) if(curr[k] != curr[L]) { j = k; break; }
-                        if(j == -1) for(int k = L - 1; k >= 0; k--) if(curr[k] != curr[L]) { j = k; break; }
-                        if(j != -1) {
-                            int ll = min(L, j);
-                            int rr = max(L, j);
-                            ops.emplace_back(ll + 1, rr + 1);
-                            int mrange = pref[rr + 1] - pref[ll];
-                            for(int k = ll; k <= rr; k++) {
-                                curr[k] = '0' + '1' - curr[k];
-                                is_mis[k] = 1 - is_mis[k];
-                            }
-                            cur_h = cur_h - 2 * mrange + (rr - ll + 1);
-                            pref[0] = 0;
-                            for(int k = 0; k < n; k++) pref[k + 1] = pref[k] + is_mis[k];
-                        } else {
+                }
+                if(j == -1) {
+                    for(int k = i - 1; k >= 0; k--) {
+                        if(curr[k] != curr[i]) {
+                            j = k;
                             break;
                         }
+                    }
+                }
+                if(j == -1) {
+
+                    break;
+                }
+                int L = min(i, j);
+                int R = max(i, j);
+                ops.emplace_back(L + 1, R + 1);
+                apply_flip(L, R);
+            }
+        } else {
+            if(a_mono && b_mono) {
+
+                ops.emplace_back(1, n);
+                apply_flip(0, n - 1);
+            } else if(b_mono) {
+
+                while(true) {
+                    int i = -1;
+                    int mismatch_cnt = 0;
+                    for(int k = 0; k < n; k++) {
+                        if(curr[k] != B[k]) {
+                            mismatch_cnt++;
+                            i = k;
+                        }
+                    }
+                    if(mismatch_cnt == 0) break;
+                    if(mismatch_cnt == 1) {
+
+                        ops.emplace_back(i + 1, i + 1);
+                        apply_flip(i, i);
+                        break;
+                    }
+
+                    int pos = -1;
+                    for(int k = 0; k < n; k++) {
+                        if(curr[k] != B[k]) {
+                            pos = k;
+                            break;
+                        }
+                    }
+                    int j = -1;
+                    for(int k = pos; k < n; k++) {
+                        if(curr[k] != curr[pos]) {
+                            j = k;
+                            break;
+                        }
+                    }
+                    if(j == -1) {
+                        for(int k = pos - 1; k >= 0; k--) {
+                            if(curr[k] != curr[pos]) {
+                                j = k;
+                                break;
+                            }
+                        }
+                    }
+                    if(j != -1) {
+                        int L = min(pos, j);
+                        int R = max(pos, j);
+                        ops.emplace_back(L + 1, R + 1);
+                        apply_flip(L, R);
+                    } else {
+                        break;
                     }
                 }
             } else {
 
-                int the_i = -1;
-                for(int k = 0; k < N; k++) if(curr[k] != B[k]) { the_i = k; break; }
-                if(the_i != -1) {
-                    ops.emplace_back(the_i + 1, the_i + 1);
-                    curr[the_i] = '0' + '1' - curr[the_i];
-                }
-
-                vector<int> is_mis(n);
-                int cur_h = 0;
-                for(int j = 0; j < n; j++) {
-                    is_mis[j] = (curr[j] != B[j]);
-                    cur_h += is_mis[j];
-                }
-
-                vector<int> pref(n + 1, 0);
-
-                for(int j = 0; j < n; j++) pref[j + 1] = pref[j] + is_mis[j];
-                while(cur_h > 0) {
-                    int L = -1;
-                    for(int j = 0; j < n; j++) if(is_mis[j]) { L = j; break; }
-                    if(L == -1) break;
-                    int best_new = INT_MAX;
-                    int best_r = -1;
-                    for(int r = 0; r < n; r++) {
-                        if(r == L) continue;
-                        if(curr[L] == curr[r]) continue;
-                        int ll = min(L, r);
-                        int rr = max(L, r);
-                        int mrange = pref[rr + 1] - pref[ll];
-                        int len_ = rr - ll + 1;
-                        int newh = cur_h - 2 * mrange + len_;
-                        if(newh < best_new) {
-                            best_new = newh;
-                            best_r = r;
-                        }
+                int first_mis = -1;
+                for(int k = 0; k < n; k++) {
+                    if(curr[k] != B[k]) {
+                        first_mis = k;
+                        break;
                     }
+                }
+                if(first_mis != -1) {
+                    ops.emplace_back(first_mis + 1, first_mis + 1);
+                    apply_flip(first_mis, first_mis);
+                }
 
-                    if(best_r != -1 && best_new < cur_h) {
-                        int ll = min(L, best_r);
-                        int rr = max(L, best_r);
-                        ops.emplace_back(ll + 1, rr + 1);
-                        int mrange = pref[rr + 1] - pref[ll];
-                        for(int k = ll; k <= rr; k++) {
-                            curr[k] = '0' + '1' - curr[k];
-                            is_mis[k] = 1 - is_mis[k];
-                        }
-                        
-                        cur_h = best_new;
-                        pref[0] = 0;
-                        for(int k = 0; k < n; k++) pref[k + 1] = pref[k] + is_mis[k];
-                    } else {
-                        int j = -1;
-                        for(int k = L; k < N; k++) if(curr[k] != curr[L]) { j = k; break; }
-                        if(j == -1) for(int k = L - 1; k >= 0; k--) if(curr[k] != curr[L]) { j = k; break; }
-
-                        if(j != -1) {
-                            int ll = min(L, j);
-                            int rr = max(L, j);
-                            ops.emplace_back(ll + 1, rr + 1);
-                            int mrange = pref[rr + 1] - pref[ll];
-                            for(int k = ll; k <= rr; k++) {
-                                curr[k] = '0' + '1' - curr[k];
-                                is_mis[k] = 1 - is_mis[k];
-                            }
-                            
-                            cur_h = cur_h - 2 * mrange + (rr - ll + 1);
-                            pref[0] = 0;
-                            for(int k = 0; k < n; k++) pref[k + 1] = pref[k] + is_mis[k];
-                        } else {
+                while(true) {
+                    int i = -1;
+                    for(int k = 0; k < n; k++) {
+                        if(curr[k] != B[k]) {
+                            i = k;
                             break;
                         }
                     }
+                    if(i == -1) break;
+                    int j = -1;
+                    for(int k = i; k < n; k++) {
+                        if(curr[k] != curr[i]) {
+                            j = k;
+                            break;
+                        }
+                    }
+                    if(j == -1) {
+                        for(int k = i - 1; k >= 0; k--) {
+                            if(curr[k] != curr[i]) {
+                                j = k;
+                                break;
+                            }
+                        }
+                    }
+                    if(j == -1) break;
+                    int L = min(i, j);
+                    int R = max(i, j);
+                    ops.emplace_back(L + 1, R + 1);
+                    apply_flip(L, R);
                 }
             }
         }
-
         cout << ops.size() << endl;
         for(auto p : ops) {
             cout << p.first << " " << p.second << endl;
