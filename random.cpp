@@ -2,24 +2,24 @@
 using namespace std;
 
 int main() {
-    int ;
-    cin >> t;
-    for(int test = 0; test < t; test++) {
-        int n;
+    int T;
+    cin >> T;
+    while(T--) {
+        int N;
         string A, B;
-        cin >> n >> A >> B;
+        cin >> N >> A >> B;
         if(A == B) {
             cout << 0 << endl;
             cout << 0 << endl;
             continue;
         }
-        bool a_mono = true;
-        bool b_mono = true;
+        bool A_mono = true;
+        bool B_mono = true;
         char fa = A[0];
         char fb = B[0];
-        for(char c : A) if(c != fa) a_mono = false;
-        for(char c : B) if(c != fb) b_mono = false;
-        int min_cost = (a_mono || b_mono) ? 1 : 0;
+        for(char c : A) if(c != fa) A_mono = false;
+        for(char c : B) if(c != fb) B_mono = false;
+        int min_cost = (A_mono || B_mono) ? 1 : 0;
         cout << min_cost << endl;
         vector<pair<int, int>> ops;
         string curr = A;
@@ -32,7 +32,7 @@ int main() {
 
             while(true) {
                 int i = -1;
-                for(int k = 0; k < n; k++) {
+                for(int k = 0; k < N; k++) {
                     if(curr[k] != B[k]) {
                         i = k;
                         break;
@@ -40,7 +40,7 @@ int main() {
                 }
                 if(i == -1) break;
                 int j = -1;
-                for(int k = i; k < n; k++) {
+                for(int k = i; k < N; k++) {
                     if(curr[k] != curr[i]) {
                         j = k;
                         break;
@@ -64,16 +64,16 @@ int main() {
                 apply_flip(L, R);
             }
         } else {
-            if(a_mono && b_mono) {
+            if(A_mono && B_mono) {
 
-                ops.emplace_back(1, n);
-                apply_flip(0, n - 1);
-            } else if(b_mono) {
+                ops.emplace_back(1, N);
+                apply_flip(0, N - 1);
+            } else if(B_mono) {
 
                 while(true) {
                     int i = -1;
                     int mismatch_cnt = 0;
-                    for(int k = 0; k < n; k++) {
+                    for(int k = 0; k < N; k++) {
                         if(curr[k] != B[k]) {
                             mismatch_cnt++;
                             i = k;
@@ -88,14 +88,14 @@ int main() {
                     }
 
                     int pos = -1;
-                    for(int k = 0; k < n; k++) {
+                    for(int k = 0; k < N; k++) {
                         if(curr[k] != B[k]) {
                             pos = k;
                             break;
                         }
                     }
                     int j = -1;
-                    for(int k = pos; k < n; k++) {
+                    for(int k = pos; k < N; k++) {
                         if(curr[k] != curr[pos]) {
                             j = k;
                             break;
@@ -121,7 +121,7 @@ int main() {
             } else {
 
                 int first_mis = -1;
-                for(int k = 0; k < n; k++) {
+                for(int k = 0; k < N; k++) {
                     if(curr[k] != B[k]) {
                         first_mis = k;
                         break;
@@ -134,7 +134,7 @@ int main() {
 
                 while(true) {
                     int i = -1;
-                    for(int k = 0; k < n; k++) {
+                    for(int k = 0; k < N; k++) {
                         if(curr[k] != B[k]) {
                             i = k;
                             break;
@@ -142,7 +142,7 @@ int main() {
                     }
                     if(i == -1) break;
                     int j = -1;
-                    for(int k = i; k < n; k++) {
+                    for(int k = i; k < N; k++) {
                         if(curr[k] != curr[i]) {
                             j = k;
                             break;

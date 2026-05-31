@@ -1,0 +1,25 @@
+{
+  "dependencies": {
+    "docx": "^9.6.1",
+    "pptxgenjs": "^4.0.1"
+  },
+  "name": "sign-language-to-speech",
+  "version": "1.0.0",
+  "description": "CNN-based Sign Language Gesture to Speech System\r - Vision-based static hand gesture recognition\r - Lightweight CNN architecture\r - Real-time webcam inference\r - Text-to-speech output",
+  "main": "report.js",
+  "scripts": {
+    "test": "echo \"Error: no test specified\" && exit 1"
+  },
+  "repository": {
+    "type": "git",
+    "url": "git+https://github.com/Giyuu57/Sign-Language-to-Speech.git"
+  },
+  "keywords": [],
+  "author": "",
+  "license": "ISC",
+  "type": "commonjs",
+  "bugs": {
+    "url": "https://github.com/Giyuu57/Sign-Language-to-Speech/issues"
+  },
+  "homepage": "https://github.com/Giyuu57/Sign-Language-to-Speech#readme"
+}
